@@ -26,11 +26,11 @@ Color-specific slime ball drops are fully customizable (though they will always 
 - **SpecialColorDropChance (default 0.05)** - The chance a colored item will drop if EnableSpecialColorDrops is true. This should be a value between 0 and 1 inclusive.
 
 ## Drop Tables
-The final entry in the configuration file is a list of drop tables. Each drop table has two fields: colorRange and itemDrops. 
+The final entry in the configuration file is a list of drop tables. Each drop table has two fields: **colorRange** and **itemDrops**. 
 
-The colorRange field contains three pairs of integers between 0 and 255, one for each of a color's red, green, and blue components. The first number in each pair is the minimum value a color can take, and the second is the maximum value. These values are inclusive.
+The **colorRange** field contains three pairs of integers between 0 and 255, one for each of a color's red, green, and blue components. The first number in each pair is the minimum value a color can take, and the second is the maximum value. These values are inclusive.
 
-The itemDrops field is a list of objects, each of which contains four values: parentSheetIndex, minDrop, maxDrop, and dropChance. The parentSheetIndex represents the item ID of the item dropped, as enumerated here﻿. As above, the minDrop and maxDrop represent the minimum and maximum number of this item which can drop (these values are also inclusive). The dropChance is a number between 0 and 1 inclusive which represents the chance the specified item will drop.
+The **itemDrops** field is a list of objects, each of which contains four values: **parentSheetIndex**, **minDrop**, **maxDrop**, and **dropChance**. The parentSheetIndex represents the item ID of the item dropped, as enumerated here﻿. As above, the minDrop and maxDrop represent the minimum and maximum number of this item which can drop (these values are also inclusive). The dropChance is a number between 0 and 1 inclusive which represents the chance the specified item will drop.
 
 When a slime ball is broken, it will check in the config file to see if its color falls within any colorRanges in the list of drop tables. If it does fall within a colorRange, it will then drop additional items as specified in the list of itemDrops. If it falls within multiple colorRanges, it will use the first from the top. Importantly, if the slime ball falls within the definition of white or purple above, or if it was left by a tiger slime, it will not look in the config file for drops. If you want it to, you should set the relevant config option to false, as described above.
 
@@ -44,22 +44,28 @@ inclusive, which is assigned to it when it hatches/spawns.
   - 5-10 Cinder Shards (50%, first-generation only)
   - 1-2 Magma Caps (33%, first-generation only)
   - 1-2 Dragon Teeth (33%, first-generation only)
+
 - **White Slime Drops (R,G,B > 230)**
   - 2-4 Refined Quartz (only if R is odd)
   - 2-4 Refined Quartz (only if G is odd)
   - 10-20 Iron Ore (only if both R and G are even)
   - 1-2 Diamonds (only if R,G,B are all even OR R,G,B are all 255)
+
 - **Purple Slime Drops (R > 150, G < 50, B > 180)**
   - 5-10 Iridium Ore (only if special number is divisible by 4 (if first-generation) or is even (otherwise))
   - 1 Iridium Bar (7.2%, only if first-generation and special number satisfies condition above) 
+
 - **Black Slime Drops (R,G,B < 80)**
   - 5-10 Coal
   - 1-2 Neptunite (5%)
   - 1-2 Bixite (5%)
+
 - **Yellow Slime Drops (R > 200, Green > 180, Blue < 50)**
   - 10-20 Gold Ore
+
 - **Red Slime Drops (R > 220, 150 > G > 90, B < 50)**
   - 10-20 Copper Ore
+
 - **Grey Slime Drops (R,G,B > 150)**
   - 20-40 Stone
 
