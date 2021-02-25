@@ -17,7 +17,7 @@ Color-specific slime ball drops are fully customizable (though they will always 
 
 - **EnableSpecialTigerSlimeDrops (default true)** - Tiger slimes are a special kind of slime whose color is technically white, so they have to be handled specially. If you want to specify your own tiger slime drops, or don't want them to drop special items, set this to false. The color {R: 255, G: 128, B: 0} must fall within the color range of your custom drop table (see below) for the items in said drop table to drop from slime balls produced by tiger slimes.
 
-- **EnableSpecialColorDrops (default false)** - When enabled, this allows slime balls with colors corresponding to one of the dye colors﻿ to drop a random item from the list of items which share that dye color. This may or may not be balanced, so it's disabled by default, but I considered it a fun enough feature to keep it.
+- **EnableSpecialColorDrops (default false)** - When enabled, this allows slime balls with colors corresponding to one of the [dye colors](https://stardewcommunitywiki.com/Dyeing#Dye_Strength)﻿ to drop a random item from the list of items which share that dye color. This may or may not be balanced, so it's disabled by default, but I considered it a fun enough feature to keep it.
 
 - **SpecialColorMinDrop (default 1)** - This is an integer which represents the minimum number of colored items which have the chance to drop if EnableSpecialColorDrops is true. As always, please exercise caution with extremely large values. This value is inclusive.
 
@@ -30,7 +30,7 @@ The final entry in the configuration file is a list of drop tables. Each drop ta
 
 The **colorRange** field contains three pairs of integers between 0 and 255, one for each of a color's red, green, and blue components. The first number in each pair is the minimum value a color can take, and the second is the maximum value. These values are inclusive.
 
-The **itemDrops** field is a list of objects, each of which contains four values: **parentSheetIndex**, **minDrop**, **maxDrop**, and **dropChance**. The parentSheetIndex represents the item ID of the item dropped, as enumerated here﻿. As above, the minDrop and maxDrop represent the minimum and maximum number of this item which can drop (these values are also inclusive). The dropChance is a number between 0 and 1 inclusive which represents the chance the specified item will drop.
+The **itemDrops** field is a list of objects, each of which contains four values: **parentSheetIndex**, **minDrop**, **maxDrop**, and **dropChance**. The parentSheetIndex represents the item ID of the item dropped, as enumerated [here](https://stardewcommunitywiki.com/Modding:Object_data#Raw_data). As above, the minDrop and maxDrop represent the minimum and maximum number of this item which can drop (these values are also inclusive). The dropChance is a number between 0 and 1 inclusive which represents the chance the specified item will drop.
 
 When a slime ball is broken, it will check in the config file to see if its color falls within any colorRanges in the list of drop tables. If it does fall within a colorRange, it will then drop additional items as specified in the list of itemDrops. If it falls within multiple colorRanges, it will use the first from the top. Importantly, if the slime ball falls within the definition of white or purple above, or if it was left by a tiger slime, it will not look in the config file for drops. If you want it to, you should set the relevant config option to false, as described above.
 
