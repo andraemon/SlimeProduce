@@ -2,7 +2,7 @@
 
 Slime Produce Mod repository.
 
-Thanks to Pathoschild for their amazing Stardew Valley modding framework, SMAPI!
+Thanks to Pathoschild for their amazing Stardew Valley modding framework, [SMAPI](https://github.com/Pathoschild/SMAPI)!
 
 Enjoy!
 
