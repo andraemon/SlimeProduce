@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
-using StardewValley.Buildings;
 using StardewValley.Monsters;
 using StardewValley.Objects;
 using Harmony;
@@ -32,20 +29,20 @@ namespace SlimeProduce
                original: AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.DayUpdate)),
                postfix: new HarmonyMethod(typeof(SlimeHutchPatches), nameof(SlimeHutchPatches.DayUpdate_Postfix))
             );
-
-            DeluxeGrabberLoaded = help.ModRegistry.IsLoaded("stokastic.DeluxeGrabber");
+                        
             help.Events.World.ObjectListChanged += World_ObjectListChanged;
             help.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             help.ConsoleCommands.Add("spawn_slime", "Spawns slimes of a certain color.\n\nUsage: spawn_slime <r> <g> <b>\n- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.", SpawnSlime);
             Monitor.Log("Loaded", LogLevel.Debug);
-            if (DeluxeGrabberLoaded == true)
-            {
-                Monitor.Log("Deluxe Auto-Grabber integration loaded", LogLevel.Debug);
-            }
         }
 
         private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            DeluxeGrabberLoaded = help.ModRegistry.IsLoaded("stokastic.DeluxeGrabber");
+            if (DeluxeGrabberLoaded == true)
+            {
+                Monitor.Log("Deluxe Auto-Grabber integration loaded", LogLevel.Debug);
+            }
             foreach (KeyValuePair<int, string> pair in Game1.objectInformation)
             {
                 StardewValley.Object obj = new StardewValley.Object(pair.Key, 1, false, -1, 0);
