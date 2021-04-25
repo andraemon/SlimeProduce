@@ -39,10 +39,9 @@ namespace SlimeProduce
         private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
             DeluxeGrabberLoaded = help.ModRegistry.IsLoaded("stokastic.DeluxeGrabber");
-            if (DeluxeGrabberLoaded == true)
-            {
-                Monitor.Log("Deluxe Auto-Grabber integration loaded", LogLevel.Debug);
-            }
+            DeluxeGrabberReduxLoaded = help.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
+            if (DeluxeGrabberLoaded) Monitor.Log("Deluxe Auto-Grabber integration loaded", LogLevel.Debug);
+            else if (DeluxeGrabberReduxLoaded) Monitor.Log("Deluxe Auto-Grabber Redux integration loaded", LogLevel.Debug);
             foreach (KeyValuePair<int, string> pair in Game1.objectInformation)
             {
                 StardewValley.Object obj = new StardewValley.Object(pair.Key, 1, false, -1, 0);
@@ -156,7 +155,7 @@ namespace SlimeProduce
                         }
 
                         DropItems:
-                        if (grabber != null && e.Location.farmers.Count == 0 && DeluxeGrabberLoaded)
+                        if (grabber != null && e.Location.farmers.Count == 0 && (DeluxeGrabberLoaded || DeluxeGrabberReduxLoaded))
                         {
                             bool full = (grabber.heldObject.Value as Chest).items.CountIgnoreNull() >= Chest.capacity;
                             foreach (KeyValuePair<int, int> p2 in ItemsToDrop)
@@ -234,6 +233,7 @@ namespace SlimeProduce
         readonly ColorRange purple = new ColorRange(new int[] { 151, 255 }, new int[] { 0, 49 }, new int[] { 181, 255 });
         readonly ColorRange white = new ColorRange(new int[] { 231, 255 }, new int[] { 231, 255 }, new int[] { 231, 255 });
         private static bool DeluxeGrabberLoaded;
+        private static bool DeluxeGrabberReduxLoaded;
         private Dictionary<Color, List<int>> ColoredObjects = new Dictionary<Color, List<int>>();
 
     }
