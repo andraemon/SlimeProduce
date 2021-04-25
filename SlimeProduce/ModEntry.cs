@@ -119,7 +119,7 @@ namespace SlimeProduce
                                 ItemsToDrop.Add(338, r.Next(2, 5));
                                 if (StrToColor(p.Value.orderData).G % 2 == 1)
                                 {
-                                    ItemsToDrop.Add(338, r.Next(2, 5));
+                                    ItemsToDrop[338] += r.Next(2, 5);
                                 }
                             }
                             else
