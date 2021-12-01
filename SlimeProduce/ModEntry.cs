@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
-using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Monsters;
 using StardewValley.Objects;
-using Harmony;
+using HarmonyLib;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 
 namespace SlimeProduce
 {
@@ -20,7 +21,7 @@ namespace SlimeProduce
             SlimeHutchPatches.Initialize(Monitor);
             Config = help.ReadConfig<ModConfig>();
 
-            var harmony = HarmonyInstance.Create(ModManifest.UniqueID);
+            var harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
                original: AccessTools.Method(typeof(StardewValley.Object), nameof(StardewValley.Object.draw), new Type[] { typeof(SpriteBatch), typeof(int), typeof(int), typeof(float) }),
                prefix: new HarmonyMethod(typeof(ObjectPatches), nameof(ObjectPatches.draw_Prefix))
@@ -80,7 +81,7 @@ namespace SlimeProduce
                     ItemsToDrop.Clear();
                     if (p.Value.Name.Contains("Slime Ball") && !string.IsNullOrEmpty(p.Value.orderData))
                     {
-                        Random r = new Random((int)(Game1.stats.DaysPlayed + Game1.uniqueIDForThisGame + p.Value.tileLocation.X * 77 + p.Value.tileLocation.Y * 777));
+                        Random r = new Random((int)(Game1.stats.DaysPlayed + Game1.uniqueIDForThisGame + p.Value.TileLocation.X * 77 + p.Value.TileLocation.Y * 777));
                         if (Config.EnableSpecialColorDrops && ColoredObjects.ContainsKey(StrToColor(p.Value.orderData)))
                         {
                             if (r.NextDouble() < Config.SpecialColorDropChance)
@@ -170,7 +171,7 @@ namespace SlimeProduce
                         {
                             foreach (KeyValuePair<int, int> p3 in ItemsToDrop)
                             {
-                                Game1.createMultipleObjectDebris(p3.Key, (int)p.Value.tileLocation.X, (int)p.Value.tileLocation.Y, p3.Value, 1f + ((Game1.player.FacingDirection == 2) ? 0f : ((float)Game1.random.NextDouble())));
+                                Game1.createMultipleObjectDebris(p3.Key, (int)p.Value.TileLocation.X, (int)p.Value.TileLocation.Y, p3.Value, 1f + ((Game1.player.FacingDirection == 2) ? 0f : ((float)Game1.random.NextDouble())));
                             }
                         }
                     }
@@ -180,7 +181,7 @@ namespace SlimeProduce
 
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            if (asset.AssetNameEquals("TileSheets/Craftables"))
+            if (asset.AssetNameEquals(PathUtilities.NormalizeAssetName("TileSheets/Craftables")))
             {
                 return true;
             }
@@ -192,7 +193,7 @@ namespace SlimeProduce
         {
             var editor = asset.AsImage();
 
-            Texture2D sourceImage = help.Content.Load<Texture2D>("assets/SlimeBallGray.png", ContentSource.ModFolder);
+            Texture2D sourceImage = help.Content.Load<Texture2D>(PathUtilities.NormalizeAssetName("assets/SlimeBallGray.png"), ContentSource.ModFolder);
             editor.PatchImage(sourceImage, targetArea: new Rectangle(0, 224, 96, 32));
         }
 
