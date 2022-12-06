@@ -5,6 +5,12 @@
 	"Description": "Slime balls in the Slime Hutch drop extra items depending on the color of the slimes in the Hutch.",
 	"UniqueID": "exotico.SlimeProduce",
 	"EntryDll": "SlimeProduce.dll",
-	"MinimumApiVersion": "3.13.0",
-	"UpdateKeys": [ "Nexus:7634" ]
+	"MinimumApiVersion": "3.14.0",
+	"UpdateKeys": [ "Nexus:7634" ],
+	"Dependencies": [
+		{
+			"UniqueID": "ferdaber.DeluxeGrabberRedux",
+			"IsRequired": false
+		}
+	]
 }
