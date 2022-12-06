@@ -10,16 +10,16 @@ using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
+using System.IO;
 
 namespace SlimeProduce
 {
-    public class ModEntry : Mod, IAssetEditor
+    public class ModEntry : Mod
     {
         public override void Entry(IModHelper helper)
         {
-            ModHelper = helper;
             SlimeHutchPatches.Initialize(Monitor);
-            Config = ModHelper.ReadConfig<ModConfig>();
+            Config = Helper.ReadConfig<ModConfig>();
 
             var harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
@@ -31,21 +31,35 @@ namespace SlimeProduce
                postfix: new HarmonyMethod(typeof(SlimeHutchPatches), nameof(SlimeHutchPatches.DayUpdate_Postfix))
             );
                         
-            ModHelper.Events.World.ObjectListChanged += World_ObjectListChanged;
-            ModHelper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            Helper.Events.World.ObjectListChanged += OnObjectListChanged;
+            Helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+            Helper.Events.Content.AssetRequested += OnAssetRequested;
 
-            ModHelper.ConsoleCommands.Add("spawn_slime", "Spawns slimes of a certain color.\n\nUsage: spawn_slime <r> <g> <b>\n- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.", SpawnSlime);
+            Helper.ConsoleCommands.Add("spawn_slime", "Spawns slimes of a certain color.\n\nUsage: spawn_slime <r> <g> <b>\n- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.", SpawnSlime);
 
             Monitor.Log("Loaded", LogLevel.Debug);
         }
 
-        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (e.NameWithoutLocale.IsEquivalentTo("TileSheets/Craftables"))
+            {
+                e.Edit(asset =>
+                {
+                    var editor = asset.AsImage();
+                    IRawTextureData sourceImage = Helper.ModContent.Load<IRawTextureData>(Path.Combine("assets", "SlimeBallGray.png"));
+                    editor.PatchImage(sourceImage, targetArea: new Rectangle(0, 224, 96, 32));
+                });
+            }
+        }
+
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             // Check if integrable mods are loaded (see if this can be done through new load order feature?)
-            DeluxeGrabberReduxLoaded = ModHelper.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
+            DeluxeGrabberReduxLoaded = Helper.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
             if (DeluxeGrabberReduxLoaded) Monitor.Log("Deluxe Auto-Grabber Redux integration loaded", LogLevel.Debug);
 
-            // Get dye objects for specil color drops
+            // Get dye objects for specil color drops (there has to be a better way to do this)
             foreach (KeyValuePair<int, string> pair in Game1.objectInformation)
             {
                 StardewValley.Object obj = new StardewValley.Object(pair.Key, 1, false, -1, 0);
@@ -66,7 +80,7 @@ namespace SlimeProduce
             }
         }
 
-        private void World_ObjectListChanged(object sender, ObjectListChangedEventArgs e)
+        private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
         {
             if (e.Location is SlimeHutch)
             {
@@ -182,24 +196,6 @@ namespace SlimeProduce
             }
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
-        {
-            if (asset.AssetNameEquals(PathUtilities.NormalizeAssetName("TileSheets/Craftables")))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Edit<T>(IAssetData asset)
-        {
-            var editor = asset.AsImage();
-
-            Texture2D sourceImage = ModHelper.Content.Load<Texture2D>(PathUtilities.NormalizeAssetName("assets/SlimeBallGray.png"), ContentSource.ModFolder);
-            editor.PatchImage(sourceImage, targetArea: new Rectangle(0, 224, 96, 32));
-        }
-
         private void SpawnSlime(string command, string[] args)
         {
             int red, green, blue;
@@ -239,7 +235,6 @@ namespace SlimeProduce
             return c;
         }
 
-        internal static IModHelper ModHelper;
         internal ModConfig Config;
         readonly ColorRange purple = new ColorRange(new int[] { 151, 255 }, new int[] { 0, 49 }, new int[] { 181, 255 });
         readonly ColorRange white = new ColorRange(new int[] { 231, 255 }, new int[] { 231, 255 }, new int[] { 231, 255 });
