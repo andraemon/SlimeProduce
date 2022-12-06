@@ -1,6 +1,6 @@
 ﻿namespace SlimeProduce
 {
-    class ItemDrop
+    public class ItemDrop
     {
         public int parentSheetIndex { get; set; }
         public int minDrop { get; set; }

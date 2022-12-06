@@ -2,7 +2,7 @@
 
 namespace SlimeProduce
 {
-    class ColorRange
+    public  class ColorRange
     {
         public int[] Red { get; set; }
         public int[] Green { get; set; }

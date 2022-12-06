@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SlimeProduce
 {
-    class ModConfig
+    public class ModConfig
     {
         public bool EnableSpecialWhiteSlimeDrops { get; set; }
         public bool EnableSpecialPurpleSlimeDrops { get; set; }

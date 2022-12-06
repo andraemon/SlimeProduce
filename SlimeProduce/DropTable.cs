@@ -2,7 +2,7 @@
 
 namespace SlimeProduce
 {
-    class DropTable
+    public class DropTable
     {
         public ColorRange colorRange { get; set; }
         public List<ItemDrop> itemDrops { get; set; }

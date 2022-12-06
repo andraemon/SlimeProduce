@@ -18,26 +18,29 @@ namespace SlimeProduce
     {
         public override void Entry(IModHelper helper)
         {
-            SlimeHutchPatches.Initialize(Monitor);
             Config = Helper.ReadConfig<ModConfig>();
 
+            // Patch relevant mathods
             var harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
                original: AccessTools.Method(typeof(StardewValley.Object), nameof(StardewValley.Object.draw), new Type[] { typeof(SpriteBatch), typeof(int), typeof(int), typeof(float) }),
-               prefix: new HarmonyMethod(typeof(ObjectPatches), nameof(ObjectPatches.draw_Prefix))
+               prefix: new HarmonyMethod(typeof(ObjectPatches), nameof(ObjectPatches.DrawPrefix))
             );
             harmony.Patch(
                original: AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.DayUpdate)),
-               postfix: new HarmonyMethod(typeof(SlimeHutchPatches), nameof(SlimeHutchPatches.DayUpdate_Postfix))
+               postfix: new HarmonyMethod(typeof(SlimeHutchPatches), nameof(SlimeHutchPatches.DayUpdatePostfix))
             );
-                        
+            
+            // Check for mods with integration
+            DeluxeGrabberReduxLoaded = Helper.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
+            if (DeluxeGrabberReduxLoaded) Monitor.Log("Deluxe Auto-Grabber Redux integration loaded", LogLevel.Debug);
+
+            // Subscribe event handlers
             Helper.Events.World.ObjectListChanged += OnObjectListChanged;
             Helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             Helper.Events.Content.AssetRequested += OnAssetRequested;
 
             Helper.ConsoleCommands.Add("spawn_slime", "Spawns slimes of a certain color.\n\nUsage: spawn_slime <r> <g> <b>\n- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.", SpawnSlime);
-
-            Monitor.Log("Loaded", LogLevel.Debug);
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
@@ -55,10 +58,6 @@ namespace SlimeProduce
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // Check if integrable mods are loaded (see if this can be done through new load order feature?)
-            DeluxeGrabberReduxLoaded = Helper.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
-            if (DeluxeGrabberReduxLoaded) Monitor.Log("Deluxe Auto-Grabber Redux integration loaded", LogLevel.Debug);
-
             // Get dye objects for specil color drops (there has to be a better way to do this)
             foreach (KeyValuePair<int, string> pair in Game1.objectInformation)
             {

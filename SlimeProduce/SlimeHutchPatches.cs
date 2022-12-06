@@ -9,13 +9,13 @@ using StardewModdingAPI;
 
 namespace SlimeProduce
 {
-    class SlimeHutchPatches
+    public static class SlimeHutchPatches
     {
-        public static void DayUpdate_Postfix(SlimeHutch __instance)
+        public static void DayUpdatePostfix(SlimeHutch __instance)
         {
             SlimeHutch hutch = __instance;
             Building building = hutch.getBuilding();
-            Random r = new Random((int)(Game1.stats.DaysPlayed + (uint)((int)Game1.uniqueIDForThisGame / 10) + (uint)(building.tileX * 77) + (uint)(building.tileY * 777)));
+            Random r = new Random((int)(Game1.stats.DaysPlayed + (uint)((int)Game1.uniqueIDForThisGame / 10) + (uint)(building.tileX.Value * 77) + (uint)(building.tileY.Value * 777)));
             List<GreenSlime> slimes = new List<GreenSlime>();
 
             foreach (NPC npc in hutch.characters)
@@ -31,7 +31,7 @@ namespace SlimeProduce
                 StardewValley.Object o = hutch.objects.Pairs.ElementAt(i).Value;
                 if (o.Name.Contains("Slime Ball"))
                 {
-                    if (string.IsNullOrEmpty(o.orderData))
+                    if (string.IsNullOrEmpty(o.orderData.Value))
                     {
                         int j = r.Next(slimes.Count);
                         if (slimes[j].Name.Contains("Tiger Slime"))
@@ -45,13 +45,6 @@ namespace SlimeProduce
                     }
                 }
             }
-        }
-
-
-        private static IMonitor Monitor;
-        public static void Initialize(IMonitor monitor)
-        {
-            Monitor = monitor;
         }
     }
 }
