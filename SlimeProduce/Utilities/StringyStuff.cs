@@ -11,7 +11,14 @@ namespace SlimeProduce
     public static class StringyStuff
     {
         public static string ToSlimeString(GreenSlime slime)
-            => $"{slime.color.Value.PackedValue}/{slime.Name == "Tiger Slime"}/{slime.firstGeneration.Value}/{slime.specialNumber.Value}";
+        {
+            bool isTiger = slime.Name == "Tiger Slime";
+            Color color = slime.color.Value;
+
+            if (isTiger) color = new Color(255, 128, 0);
+
+            return $"{color.PackedValue}/{isTiger}/{slime.firstGeneration.Value}/{slime.specialNumber.Value}";
+        }
 
         public static bool TryParseSlimeString(string slimeData, out Color color, out bool isTiger, out bool firstGeneration, out int specialNumber)
         {
