@@ -6,6 +6,7 @@ using StardewValley.Monsters;
 using StardewValley.Buildings;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
+using SObject = StardewValley.Object;
 
 namespace SlimeProduce
 {
@@ -13,38 +14,17 @@ namespace SlimeProduce
     {
         public static void DayUpdatePostfix(SlimeHutch __instance)
         {
-            SlimeHutch hutch = __instance;
-            Building building = hutch.getBuilding();
-            Random r = new Random((int)(Game1.stats.DaysPlayed + (uint)((int)Game1.uniqueIDForThisGame / 10) + (uint)(building.tileX.Value * 77) + (uint)(building.tileY.Value * 777)));
-            List<GreenSlime> slimes = new List<GreenSlime>();
+            Building building = __instance.getBuilding();
+            Random r = new((int)(Game1.stats.DaysPlayed + (uint)((int)Game1.uniqueIDForThisGame / 10) + (uint)(building.tileX.Value * 77) + (uint)(building.tileY.Value * 777)));
+            List<GreenSlime> slimes = new();
 
-            foreach (NPC npc in hutch.characters)
-            {
-                if (npc is GreenSlime)
-                {
-                    slimes.Add(npc as GreenSlime);
-                }
-            }
+            foreach (NPC npc in __instance.characters)
+                if (npc is GreenSlime slime)
+                    slimes.Add(slime);
 
-            for (int i = 0; i < hutch.objects.Count(); i++)
-            {
-                StardewValley.Object o = hutch.objects.Pairs.ElementAt(i).Value;
-                if (o.Name.Contains("Slime Ball"))
-                {
-                    if (string.IsNullOrEmpty(o.orderData.Value))
-                    {
-                        int j = r.Next(slimes.Count);
-                        if (slimes[j].Name.Contains("Tiger Slime"))
-                        {
-                            o.orderData.Value = ModEntry.ColorFormat(new Color(255, 128, 0).ToString()) + $".420" + $".{slimes[j].firstGeneration}";
-                        }
-                        else
-                        {
-                            o.orderData.Value = ModEntry.ColorFormat(slimes[j].color.ToString()) + $".{slimes[j].specialNumber}" + $".{slimes[j].firstGeneration}";
-                        }
-                    }
-                }
-            }
+            foreach (KeyValuePair<Vector2, SObject> o in __instance.Objects.Pairs)
+                if (o.Value.ParentSheetIndex >= 56 && o.Value.ParentSheetIndex <= 61)
+                    o.Value.orderData.Set(StringyStuff.ToSlimeString(slimes[r.Next(slimes.Count)]));
         }
     }
 }
