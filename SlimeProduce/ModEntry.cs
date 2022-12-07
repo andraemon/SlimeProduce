@@ -37,7 +37,13 @@ namespace SlimeProduce
             Helper.Events.Content.AssetRequested += OnAssetRequested;
 
             // Register console commands
-            Helper.ConsoleCommands.Add("spawn_slime", "Spawns slimes of a certain color.\n\nUsage: spawn_slime <r> <g> <b>\n- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.", SpawnSlime);
+            Helper.ConsoleCommands.Add("spawn_slime", "Spawns a slime or slimes of a certain color.\n\n" +
+                "Usage: spawn_slime <r> <g> <b> [n]\n" +
+                "- r/g/b: The values for the red, green or blue components of the slime's color. Should be integers between 0 and 255.\n" +
+                "- n: The number of slimes to spawn, defaults to 1.", SpawnSlime);
+            Helper.ConsoleCommands.Add("spawn_tiger_slime", "Spawns a slime or slimes of a certain color.\n\n" +
+                "Usage: spawn_tiger_slime [n]\n" +
+                "- n: The number of tiger slimes to spawn, defaults to 1.", SpawnTigerSlime);
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
@@ -102,20 +108,37 @@ namespace SlimeProduce
 
         private void SpawnSlime(string command, string[] args)
         {
-            int red, green, blue;
-
-            try {
-                red = int.Parse(args[0]);
-                green = int.Parse(args[1]);
-                blue = int.Parse(args[2]);
-            }
-            catch {
+            if (args.Length < 3 || !int.TryParse(args[0], out int red) || !int.TryParse(args[1], out int green) || !int.TryParse(args[2], out int blue))
+            {
                 Monitor.Log("Could not parse arguments, please ensure they are formatted correctly.");
                 return;
             }
 
-            Monitor.Log($"Spawning slime with color {red}, {green}, {blue}.", LogLevel.Debug);
-            Game1.currentLocation.characters.Add(new GreenSlime(Game1.player.lastPosition, new Color(red, green, blue)));
+            int num;
+
+            if (args.Length < 4 || !int.TryParse(args[3], out num)) num = 1;
+
+            Monitor.Log($"Spawning {num} slime(s) with color {red}, {green}, {blue}.", LogLevel.Debug);
+
+            for (int i = 0; i < num; i++)
+                Game1.currentLocation.characters.Add(new GreenSlime(Game1.player.lastPosition, new Color(red, green, blue)));
+        }
+
+        private void SpawnTigerSlime(string command, string[] args)
+        {
+            int num;
+
+            if (args.Length == 0 || !int.TryParse(args[0], out num)) num = 1;
+
+            Monitor.Log($"Spawning {num} tiger slime(s).", LogLevel.Debug);
+
+            for (int i = 0; i < num; i++)
+            {
+                var slime = new GreenSlime(Game1.player.lastPosition);
+                slime.makeTigerSlime();
+
+                Game1.currentLocation.characters.Add(slime);
+            }
         }
 
         internal static ModConfig Config;
