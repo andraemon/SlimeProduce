@@ -95,7 +95,7 @@ namespace SlimeProduce
 
 				// Add iridium bars
 				if (IsFirstGeneration && r.NextDouble() < 0.072)
-					drops.Add(485, 1);
+					drops.Add(337, 1);
 
 				return drops;
 			}
