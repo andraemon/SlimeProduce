@@ -23,7 +23,7 @@ namespace SlimeProduce
                     slimes.Add(slime);
 
             foreach (KeyValuePair<Vector2, SObject> o in __instance.Objects.Pairs)
-                if (o.Value.ParentSheetIndex >= 56 && o.Value.ParentSheetIndex <= 61)
+                if (o.Value.Name == "Slime Ball")
                     o.Value.orderData.Set(StringyStuff.ToSlimeString(slimes[r.Next(slimes.Count)]));
         }
     }

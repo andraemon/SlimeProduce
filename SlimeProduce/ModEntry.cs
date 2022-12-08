@@ -87,7 +87,7 @@ namespace SlimeProduce
 
                 // Add additional slimeball drops as debris or to grabber
                 foreach (KeyValuePair<Vector2, SObject> obj in e.Removed)
-                    if (obj.Value.ParentSheetIndex >= 56 && obj.Value.ParentSheetIndex <= 61)
+                    if (obj.Value.Name == "Slime Ball")
                     {
                         var drops = new SlimeBall(obj.Value).GenerateDrops();
 

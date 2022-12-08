@@ -13,7 +13,7 @@ namespace SlimeProduce
     {
         public static bool DrawPrefix(StardewValley.Object __instance, SpriteBatch spriteBatch, int x, int y, float alpha)
         {
-            if (__instance.ParentSheetIndex >= 56 && __instance.ParentSheetIndex <= 61)
+            if (__instance.Name == "Slime Ball")
             {
                 Color color = Color.Lime;
                 if (StringyStuff.TryGetSlimeColor(__instance.orderData.Value, out Color slimeColor))
