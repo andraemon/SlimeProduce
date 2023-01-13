@@ -35,6 +35,7 @@ namespace SlimeProduce
             // Subscribe event handlers
             Helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             Helper.Events.Content.AssetRequested += OnAssetRequested;
+            Helper.Events.World.ObjectListChanged += OnObjectListChanged;
 
             // Register console commands
             Helper.ConsoleCommands.Add("spawn_slime", "Spawns a slime or slimes of a certain color.\n\n" +
@@ -64,7 +65,6 @@ namespace SlimeProduce
             // Enable Deluxe Grabber Redux integration if it's present
             DeluxeGrabberReduxLoaded = Helper.ModRegistry.IsLoaded("ferdaber.DeluxeGrabberRedux");
             if (DeluxeGrabberReduxLoaded) {
-                Helper.Events.World.ObjectListChanged += OnObjectListChanged;
                 Monitor.Log("Deluxe Auto-Grabber Redux integration loaded", LogLevel.Debug);
             }
             
